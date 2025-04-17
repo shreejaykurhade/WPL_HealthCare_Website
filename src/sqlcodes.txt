@@ -1,0 +1,99 @@
+Step 1: Database Setup
+First, let's create the necessary database tables:
+
+sql
+-- Create database
+CREATE DATABASE healthcare_website;
+USE healthcare_website;
+
+-- Doctors table
+CREATE TABLE doctors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    specialty VARCHAR(100) NOT NULL,
+    timings VARCHAR(100) NOT NULL,
+    experience INT,
+    photolink VARCHAR(255),
+    qualifications VARCHAR(255),
+    about TEXT
+);
+
+-- Users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    contact VARCHAR(20),
+    dob DATE,
+    height FLOAT,
+    weight FLOAT,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Appointments table
+CREATE TABLE appointments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    doctor_id INT,
+    appointment_date DATE NOT NULL,
+    appointment_time TIME NOT NULL,
+    reason TEXT,
+    status ENUM('pending', 'confirmed', 'cancelled', 'completed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
+);
+
+-- Feedback table
+CREATE TABLE feedback (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    visit_date DATE,
+    phone VARCHAR(20),
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Newsletter subscribers
+CREATE TABLE newsletter (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+Step 2: Insert Sample Doctors Data
+sql
+-- Insert doctor data
+INSERT INTO doctors (name, specialty, timings, experience, photolink, qualifications, about) VALUES
+('Dr. A Sharma', 'Cardiologist', '9 AM - 2 PM', 15, 'images/doctor1.jpg', 'MD, DM Cardiology', 'Specialized in treating heart conditions with 15 years of experience'),
+('Dr. B Mehta', 'Pediatrician', '10 AM - 4 PM', 10, 'images/doctor2.jpg', 'MBBS, MD Pediatrics', 'Child specialist with focus on childhood diseases and immunization'),
+('Dr. C Patel', 'Orthopaedic', '8 AM - 1 PM', 20, 'images/doctor3.jpg', 'MS Orthopaedics', 'Expert in joint replacement surgeries and sports injuries'),
+('Dr. D Gupta', 'Neurologist', '11 AM - 5 PM', 12, 'images/doctor4.jpg', 'MD, DM Neurology', 'Specializes in disorders of the nervous system'),
+('Dr. E Verma', 'Dermatologist', '9 AM - 3 PM', 8, 'images/doctor5.jpg', 'MD Dermatology', 'Skin specialist with expertise in treating chronic skin conditions'),
+('Dr. F Rao', 'Ophthalmologist', '10 AM - 2 PM', 14, 'images/doctor6.jpg', 'MS Ophthalmology', 'Eye specialist treating various eye disorders and surgeries'),
+('Dr. G Das', 'ENT Specialist', '2 PM - 7 PM', 11, 'images/doctor7.jpg', 'MS ENT', 'Specialized in treating ear, nose and throat conditions'),
+('Dr. H Verma', 'Gynecologist', '9 AM - 1 PM', 18, 'images/doctor8.jpg', 'MD Gynecology', 'Women's health specialist focusing on reproductive health');
+
+
+-- Additional doctor data with diverse values for effective filtering
+INSERT INTO doctors (name, specialty, timings, experience, photolink, qualifications, about) VALUES
+('Dr. I Kumar', 'Cardiologist', '8 AM - 12 PM', 22, 'images/doctor9.jpg', 'MD Cardiology, FRCP', 'Interventional cardiologist specializing in angioplasty and stent procedures'),
+('Dr. J Singh', 'Cardiologist', '4 PM - 8 PM', 13, 'images/doctor10.jpg', 'MD, DNB Cardiology', 'Heart rhythm specialist with expertise in pacemaker implantation'),
+('Dr. K Joshi', 'Pediatrician', '9 AM - 1 PM', 8, 'images/doctor11.jpg', 'MD Pediatrics, DCH', 'Focuses on newborn care and developmental pediatrics'),
+('Dr. L Desai', 'Pediatrician', '2 PM - 6 PM', 16, 'images/doctor12.jpg', 'MBBS, MD, Fellowship in Pediatric Neurology', 'Specializes in childhood neurological disorders'),
+('Dr. M Malhotra', 'Orthopaedic', '10 AM - 3 PM', 25, 'images/doctor13.jpg', 'MS Ortho, Fellowship in Spine Surgery', 'Expert in spinal surgery and degenerative disc diseases'),
+('Dr. N Reddy', 'Orthopaedic', '4 PM - 9 PM', 11, 'images/doctor14.jpg', 'MS Ortho, FRCS', 'Sports medicine specialist treating athletic injuries'),
+('Dr. O Arora', 'Neurologist', '8 AM - 2 PM', 19, 'images/doctor15.jpg', 'MD, DM Neurology, Fellowship in Movement Disorders', 'Specializes in Parkinson\'s and movement disorders'),
+('Dr. P Kapoor', 'Neurologist', '3 PM - 7 PM', 9, 'images/doctor16.jpg', 'MD Neurology, MRCP', 'Headache specialist with expertise in migraine treatment'),
+('Dr. Q Shah', 'Dermatologist', '9 AM - 12 PM', 20, 'images/doctor17.jpg', 'MD Dermatology, Fellowship in Cosmetic Dermatology', 'Expertise in aesthetic procedures and laser treatments'),
+('Dr. R Bose', 'Dermatologist', '5 PM - 9 PM', 6, 'images/doctor18.jpg', 'MD Dermatology, DNB', 'Specializes in pediatric dermatology and eczema management'),
+('Dr. S Mishra', 'Ophthalmologist', '8 AM - 1 PM', 24, 'images/doctor19.jpg', 'MS Ophthalmology, FRCS', 'Retina specialist experienced in managing diabetic retinopathy'),
+('Dr. T Agarwal', 'Ophthalmologist', '2 PM - 6 PM', 12, 'images/doctor20.jpg', 'MS Ophthalmology, Fellowship in Cornea', 'Cornea specialist performing keratoplasty procedures'),
+('Dr. U Sinha', 'ENT Specialist', '9 AM - 3 PM', 18, 'images/doctor21.jpg', 'MS ENT, Fellowship in Head & Neck Surgery', 'Head and neck cancer specialist and reconstructive surgeon'),
+('Dr. V Prakash', 'ENT Specialist', '12 PM - 5 PM', 7, 'images/doctor22.jpg', 'MS ENT, Diploma in Audiology', 'Audiologist specializing in hearing disorders and cochlear implants'),
+('Dr. W Rajan', 'Gynecologist', '10 AM - 2 PM', 21, 'images/doctor23.jpg', 'MD Gynecology, Fellowship in Reproductive Medicine', 'Fertility specialist with expertise in IVF procedures'),
+('Dr. X Mahajan', 'Gynecologist', '3 PM - 8 PM', 14, 'images/doctor24.jpg', 'MD Gynecology, DNB', 'Specializes in high-risk pregnancies and prenatal care'),
+('Dr. Y Bannerjee', 'Psychiatrist', '11 AM - 4 PM', 17, 'images/doctor25.jpg', 'MD Psychiatry, Dip. in CBT', 'Treats mood disorders with integrated medication and therapy approach'),
+('Dr. Z Nair', 'Psychiatrist', '5 PM - 9 PM', 9, 'images/doctor26.jpg', 'MD Psychiatry, Fellowship in Addiction Medicine', 'Specializes in addiction treatment and recovery programs');
